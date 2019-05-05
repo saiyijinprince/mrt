@@ -1,7 +1,9 @@
 from station import Station
+from date_utils import DateUtils
 from queue import Queue
 
 class StationMap:
+    dateUtils = DateUtils()
     def __init__(self, stationMapDataFilePath: str):
         f = open(stationMapDataFilePath, "r")
         if f.mode != 'r':
@@ -44,8 +46,6 @@ class StationMap:
 
             prevStation = station
             prevLine = currLine
-
-        #print (self.stationInterchanges)
     
     def addEdge(self, station1:str, station2:str):
         if (station1 == station2):
@@ -63,6 +63,61 @@ class StationMap:
     def addEdges(self, station:str, stations:[]):
         for s in stations:
             self.addEdge(station, s)
+
+    def scheduleRoute(self, source:str, dest:str, startTime:str) -> []:
+        if (source == dest):
+            return []
+
+        sources = self.stationInterchanges[source]
+        dests = self.stationInterchanges[dest]
+        destinations = set(dests)
+        results = []
+        visited = set()
+
+        q = Queue()
+        for s in sources:
+            currStation = self.stations[s]
+            if (currStation.isOpenAtSpecificTime(startTime)):
+                q.put((s, [], startTime))
+
+        while not q.empty():
+            (curr, path, elapsedTime) = q.get()
+            if curr in visited:
+                continue
+
+            visited.add(curr)
+            path.append(curr)
+            currStation = self.stations[curr]
+            
+            if curr in destinations:
+                timeTaken = StationMap.dateUtils.minuteDifference(startTime, elapsedTime)
+                results.append((list(path), str(timeTaken)))
+                continue
+            
+            interchanges = Queue()
+            neighbors = self.stationGraph[curr]
+            for n in neighbors:
+                nextStation = self.stations[n]
+
+                if n in visited:
+                    continue
+
+                #If there are interchange stations, always add the stations that's on same line first
+                if currStation.line == nextStation.line:
+                    arrivalTime = nextStation.getStationTravelTime(elapsedTime)
+                    if nextStation.isOpenAtSpecificTime(arrivalTime):
+                        q.put((n, list(path), arrivalTime))
+                else:
+                    #Add time to interchange time to the arrival time
+                    arrivalTime = currStation.addStationInterchangeTime(elapsedTime)
+                    arrivalTime = nextStation.getStationTravelTime(elapsedTime)
+                    if nextStation.isOpenAtSpecificTime(arrivalTime):
+                        interchanges.put((n, list(path), arrivalTime))
+
+            while not interchanges.empty():
+                q.put(interchanges.get())                
+
+        return results
 
     def findRouteShortestPath(self, source:str, dest:str) -> []:
         if source == dest:
@@ -88,8 +143,10 @@ class StationMap:
             path.append(curr)
 
             if curr in destinations:
-                if len(minPath) == 0 or len(path) < len(minPath):
-                    minPath = list(path)
+                if len(minPath) == 0:
+                    minPath.append((list(path),''))    
+                elif len(path) < len(minPath[0][0]):
+                    minPath[0] = (list(path),'')
 
             neighbors = self.stationGraph[curr]
             interchanges = Queue()
@@ -107,51 +164,35 @@ class StationMap:
 
         return minPath
     
-    def printRoute(self, route:[]):
-        if (len(route) == 0):
+    def printRoute(self, routesInfo:[]):
+        if (len(routesInfo) == 0):
             return
         
-        prevStation = self.stations[route[0]]
-        for i in range(1, len(route)):
-            station = self.stations[route[i]]
-            if prevStation.line != station.line:
-                print ('Change from {0} line to {1} line'.format(prevStation.line, station.line))
+        for ri in routesInfo:
+            if len(ri) != 2:
+                continue
+
+            route = ri[0]
+            travelTime = ri[1]
+
+            prevStation = self.stations[route[0]]
+            lastStation = self.stations[route[-1]]
+            print('\n')
+            print('Travel from {0} to {1}'.format(prevStation.name, lastStation.name))
+            if len(travelTime) == 0:
+                print('Stations travelled: {0}'.format(len(route)))
             else:
-                print ('Take {0} line from {1} to {2}'.format(station.line, prevStation.name, station.name))
-            prevStation = station
-
-
-"""
-    def dfsShortestPath(self, s:str, d:[]) -> []:
-        visited = set()
-        currPath = []
-        destinations = set(d)
-        minPath = []
-        
-
-        def helper(currPath:[], minPath:[], curr:str, visited:set) -> bool:         
-            if curr in visited:
-                return False
-
-            visited.add(curr)
-            currPath.append(curr) 
-
-            if curr in destinations:
-                return True
-
-            neighbors = self.stationGraph[curr]
-            for n in neighbors:
-                if helper(currPath, minPath, n, visited):
-                    if len(minPath) == 0 or len(currPath) < len(minPath):
-                        minPath = list(currPath)
-
-            visited.remove(curr)
-            del currPath[-1]
-            return False
-
-        helper(currPath, minPath, s, visited)
-        return minPath
-"""
+                print('Time: {0}'.format(travelTime))
+            print('Route: {}'.format(route))
+            
+            for i in range(1, len(route)):
+                station = self.stations[route[i]]
+                if prevStation.line != station.line:
+                    print ('Change from {0} line to {1} line'.format(prevStation.line, station.line))
+                else:
+                    print ('Take {0} line from {1} to {2}'.format(station.line, prevStation.name, station.name))
+                prevStation = station
+                  
 
 
 
