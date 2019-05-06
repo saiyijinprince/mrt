@@ -1,0 +1,13 @@
+body {background-color: lightblue;}
+html, body. div. h1. h2 {font-family: "Marker Felt", "Lucida Sans", sans-serif;}
+h3 {font-family: sans-serif;}
+p {font-family: sans-serif;}
+
+html, body, div, p {font-weight: normal;}
+h1, h2 {font-weight: bold;}
+sup {font-weight: normal;}
+
+html, body, div, p { font-size: 12px;}
+h1 {font-size: 32px;}
+h2 {font-size: 24px;}
+h1, h2 {clear: left;}

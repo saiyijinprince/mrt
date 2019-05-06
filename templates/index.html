@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<form method="POST" action="/findRoute" name='webapp'>
+	<h2>Route Finder</h2>
+	<strong>Start: </strong>
+	<br/>
+	<input type="text"
+			name="source"
+			size="200"
+			placeholder="Enter Start">
+
+	<br/>
+	<br/>
+	<strong>Destination:</strong>
+	<br/>
+	<input type="text"
+			name="dest"
+			size="200"
+			placeholder="Enter Destion">
+	<br/>
+	<br/>
+
+	<strong>Options: </strong>
+	<input type="radio" name="option" value="shortest" checked> Shortest Path  
+	<input type="radio" name="option" value="fastest"> Fastest Path <br/> <br/>
+	
+	<strong>Departure Time(optional): </strong>
+	<input type="datetime-local" name="time">
+	<br/>
+	<br/>
+	<button type="submit">
+		Find Route
+	</button> 
+</form>
+
+{% endblock %}

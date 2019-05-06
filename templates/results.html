@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<h2>{{results_title}}</h2>
+{% for r in routes %}
+    <h3>Route #{{r.id}}:</h3>
+    <strong>{{r.header}}</strong>
+    <br/>
+    <strong>{{r.desc}}</strong>
+    <br/>
+    <strong>{{r.summary}}</strong>
+    <br/>
+    {% for s in r.routeSteps %}
+        <strong>{{s}}</strong><br/>
+        
+    {% endfor %}
+
+{% endfor %}
+
+{% endblock %}

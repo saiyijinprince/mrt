@@ -12,8 +12,8 @@ class StationMap:
 
         self.stations = {}
         self.stationGraph = {}
-
         self.stationInterchanges = {}
+
         prevStation = ''
         prevLine = ''
         count = -1
@@ -63,6 +63,38 @@ class StationMap:
     def addEdges(self, station:str, stations:[]):
         for s in stations:
             self.addEdge(station, s)
+
+    def getStationsList(self) -> []:
+        stationsList = []
+
+        for k,v in self.stations.items():
+            stationsList.append(v.name)
+            
+        return stationsList
+
+    def findRoute(self, source:str, target:str, option:str = None, startTime:str = None) -> []:
+        if (not source or not target):
+            print("Invalid input")
+            return []
+
+        if (source not in self.stationInterchanges or target not in self.stationInterchanges):
+            print("Invalid inputs")
+            return []
+
+        if not option:
+            option = 'shortest'
+
+        route = []
+        if option == 'shortest':
+            route = self.findRouteShortestPath(source, target)
+        elif option == 'fastest':
+            if not startTime or len(startTime) == 0:
+                startTime = StationMap.dateUtils.getTodaysDate()
+            route = self.scheduleRoute(source, target, startTime)
+        else:
+            print('Invalid option')
+            return []
+        return route
 
     def scheduleRoute(self, source:str, dest:str, startTime:str) -> []:
         if (source == dest):
@@ -163,35 +195,56 @@ class StationMap:
                 q.put(interchanges.get())
 
         return minPath
-    
-    def printRoute(self, routesInfo:[]):
-        if (len(routesInfo) == 0):
+
+    def formateRoutesForPrintig(self, routes:[]) -> []:
+        if (len(routes) == 0):
             return
         
-        for ri in routesInfo:
+        displayableRoutes = []
+        displayableRoute = {}
+        for i, ri in enumerate(routes):
             if len(ri) != 2:
                 continue
-
+            
+            displayableRoute['id'] = i
             route = ri[0]
             travelTime = ri[1]
 
             prevStation = self.stations[route[0]]
             lastStation = self.stations[route[-1]]
-            print('\n')
-            print('Travel from {0} to {1}'.format(prevStation.name, lastStation.name))
+
+            displayableRoute['header'] = 'Travel from {0} to {1}'.format(prevStation.name, lastStation.name)
             if len(travelTime) == 0:
-                print('Stations travelled: {0}'.format(len(route)))
+                displayableRoute['desc'] = 'Stations travelled: {0}'.format(len(route))
             else:
-                print('Time: {0}'.format(travelTime))
-            print('Route: {}'.format(route))
+                displayableRoute['desc'] = 'Time: {0} minutes'.format(travelTime)
             
-            for i in range(1, len(route)):
-                station = self.stations[route[i]]
+            displayableRoute['summary'] = 'Route: {}'.format(route)
+            routeSteps = []
+            for j in range(1, len(route)):
+                station = self.stations[route[j]]
                 if prevStation.line != station.line:
-                    print ('Change from {0} line to {1} line'.format(prevStation.line, station.line))
+                    routeSteps.append('Change from {0} line to {1} line'.format(prevStation.line, station.line))
                 else:
-                    print ('Take {0} line from {1} to {2}'.format(station.line, prevStation.name, station.name))
+                    routeSteps.append('Take {0} line from {1} to {2}'.format(station.line, prevStation.name, station.name))
                 prevStation = station
+            
+            displayableRoute['routeSteps'] = list(routeSteps)
+            displayableRoutes.append(dict(displayableRoute))
+        return displayableRoutes
+    
+    def printRoute(self, routesInfo:[]):
+        routesDisplay = self.formateRoutesForPrintig(routesInfo)
+
+        for rd in routesDisplay:
+            print('Route #{0}'.format(rd['id']))
+            print(rd['header'])
+            print(rd['desc'])
+            print(rd['summary'])
+      
+            for step in rd['routeSteps']:
+                print(step)
+            print('\n')
                   
 
 

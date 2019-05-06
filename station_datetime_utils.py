@@ -1,19 +1,6 @@
 from datetime import datetime, time, timedelta
 from date_utils import DateUtils
 
-"""
-def isTimeBetween(beginTime:time, endTime:time, inputTime:time) -> bool:
-    if beginTime < endTime:
-        return inputTime >= beginTime and inputTime <= endTime
-    else:
-        return inputTime >= beginTime or inputTime <= endTime
-
-def addMinutes(currentDate:str, dateFormat:str,  mins:int) -> str:
-    inputDateTime = datetime.strptime(currentDate, dateFormat)
-    nextTime = inputDateTime + timedelta(minutes=mins)
-    return nextTime.strftime(dateFormat)
-"""
-
 class StationDatetimeUtils:
     dateUtils = DateUtils()
     def __init__(self):

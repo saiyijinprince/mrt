@@ -14,7 +14,7 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv, "i:s:d:h:o:t:")
     except getopt.GetoptError:
-        print ('usage: zendesk.py -d <path/to/stationmap.csv')
+        print ('usage: zendesk.py -i <path/to/stationmap.csv> -s <start station> -d <target station> [-o <option=[shortest,fastest] -t <startTime>]')
         sys.exit(2)
     for opt, arg in opts:
         if opt == "-i":
@@ -33,17 +33,7 @@ def main(argv):
     print ('Input file:', inputFile)
 
     stationMap = StationMap(inputFile)
-    route = ()
-    if option == 'shortest':
-        route = stationMap.findRouteShortestPath(source, target)
-    elif option == 'fastest':
-        if len(time) == 0:
-            time = datetime.today().strftime('%Y-%m-%dT%H:%M')
-        route = stationMap.scheduleRoute(source, target, time)
-    else:
-        print('Invalid option')
-        exit(2)
-
+    route = stationMap.findRoute(source, target, option, time)
     stationMap.printRoute(route)
 
     #print(stationMap.stationExchanges)

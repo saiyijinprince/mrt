@@ -20,3 +20,8 @@ class DateUtils:
 
         diff = endDateTime - beginDateTime
         return diff.total_seconds() / 60.0
+
+    def getTodaysDate(self, dateFormat:str = None) -> str:
+        if not dateFormat:
+            dateFormat = '%Y-%m-%dT%H:%M'
+        return datetime.today().strftime(dateFormat)
