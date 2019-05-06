@@ -8,6 +8,7 @@
 	<input type="text"
 			name="source"
 			size="200"
+			list="stationNames"
 			placeholder="Enter Start">
 
 	<br/>
@@ -17,6 +18,7 @@
 	<input type="text"
 			name="dest"
 			size="200"
+			list="stationNames"
 			placeholder="Enter Destion">
 	<br/>
 	<br/>
@@ -33,5 +35,11 @@
 		Find Route
 	</button> 
 </form>
+
+<datalist id="stationNames">
+	{% for k,v in stationMap.stations.items() %}
+		<option value={{v.name}}>{{k}}</option>
+	{% endfor %}
+</datalist>
 
 {% endblock %}

@@ -64,14 +64,6 @@ class StationMap:
         for s in stations:
             self.addEdge(station, s)
 
-    def getStationsList(self) -> []:
-        stationsList = []
-
-        for k,v in self.stations.items():
-            stationsList.append(v.name)
-            
-        return stationsList
-
     def findRoute(self, source:str, target:str, option:str = None, startTime:str = None) -> []:
         if (not source or not target):
             print("Invalid input")

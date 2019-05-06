@@ -4,11 +4,10 @@ from station_map import StationMap
 app = Flask(__name__)
 
 stationMap = StationMap('./StationMap.csv')
-stationNamesList = stationMap.getStationsList()
 
 @app.route('/')
 def home() -> 'html':
-	return render_template('index.html', page_title='Zendesk\'s MRT System')
+	return render_template('index.html', page_title='Zendesk\'s MRT System', stationMap=stationMap)
 
 @app.route('/findRoute', methods=['POST'])
 def findRoute() -> 'html':
