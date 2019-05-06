@@ -1,6 +1,35 @@
 from station_datetime_utils import StationDatetimeUtils
 
 class Station:
+    """
+    A class that encapsulates all of the station metadata.  It also provides methods to determine
+    the timing based for travel and interchange times.
+
+    Attributes
+    ----------
+    code: str
+        The station code (e.x. NE21)
+    name: str
+        The full station name
+    date: str
+        The date the station was constructed
+    line: str
+        The station line (e.x. NE)
+
+    Methods
+    -------
+    isOpen() -> bool:
+        Returns whether the station has been constructed.
+
+    isOpenAtSpecificTime(self, inputTime:str = None) -> bool:
+        Returns wether the station has been constructed already with respect to the input time
+
+    addStationInterchangeTime(self, inputTime:str) -> str:
+        Given the inputTime, it will return a new timestamp adding the additional interchange time
+
+    getStationTravelTime(self, inputTime:str) -> str:
+        Given the inputTime, it will return a new timestamp adding the additional interchange time
+    """
 
     stationDatetimeUtils = StationDatetimeUtils()
 

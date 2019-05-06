@@ -10,11 +10,11 @@ def main(argv):
     target = ''
     option = 'shortest'
     time = ''
-
+    helpMsg = 'usage: zendesk.py -i <path/to/stationmap.csv> -s <start station> -d <target station> [-o <option=[shortest,fastest] -t <startTime>]' 
     try:
         opts, args = getopt.getopt(argv, "i:s:d:h:o:t:")
     except getopt.GetoptError:
-        print ('usage: zendesk.py -i <path/to/stationmap.csv> -s <start station> -d <target station> [-o <option=[shortest,fastest] -t <startTime>]')
+        print (helpMsg)
         sys.exit(2)
     for opt, arg in opts:
         if opt == "-i":
@@ -28,7 +28,7 @@ def main(argv):
         elif opt == '-t':
             time = arg
         elif opt == "-h":
-            print ('zendesk.py -s <path/to/stationmap.csv>')
+            print (helpMsg)
             sys.exit()
     print ('Input file:', inputFile)
 

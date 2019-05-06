@@ -17,7 +17,7 @@ def findRoute() -> 'html':
 	time = request.form['time']
 
 	routes = stationMap.findRoute(source, dest, option, time)
-	routesDisplay = stationMap.formateRoutesForPrintig(routes)
+	routesDisplay = stationMap.formateRoutesForPrinting(routes)
 
 	if len(routes) == 0:
 		return render_template('no_routes.html', results_title='No Routes Found', routes=routes)
