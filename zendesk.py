@@ -20,9 +20,9 @@ def main(argv):
         if opt == "-i":
             inputFile = arg
         elif opt == "-s":
-            source = arg
+            source = arg.lower()
         elif opt == "-d":
-            target = arg
+            target = arg.lower()
         elif opt == "-o":
             option = arg.lower()
         elif opt == '-t':
@@ -30,7 +30,7 @@ def main(argv):
         elif opt == "-h":
             print (helpMsg)
             sys.exit()
-            
+
     print ('Input file:', inputFile)
     stationMap = StationMap(inputFile)
     route = stationMap.findRoute(source, target, option, time)

@@ -284,11 +284,12 @@ class StationMap:
                 continue
 
             # Builds the station graph
-            if name in self.stationInterchanges:
-                self.stationInterchanges[name].append(station)
-                self.__addEdges(station, self.stationInterchanges[name])
+            nameLower = name.lower()
+            if nameLower in self.stationInterchanges:
+                self.stationInterchanges[nameLower].append(station)
+                self.__addEdges(station, self.stationInterchanges[nameLower])
             else:
-                self.stationInterchanges[name] = [station]
+                self.stationInterchanges[nameLower] = [station]
             
             if (prevLine != currLine):
                 prevStation = ''
