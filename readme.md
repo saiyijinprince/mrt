@@ -36,6 +36,8 @@ Inside the zendesk folder, you'll find Python3/Python2 versions.  There are no d
 
 
 ## Option #2: Web App
+**Python 3 is recommended**  
+**Google Chrome is recommended** 
     
     Steps:
         0. Requires flask so to run the web app, run: "pip install flask"

@@ -31,7 +31,12 @@ def main(argv):
             print (helpMsg)
             sys.exit()
 
-    print ('Input file:', inputFile)
+    print ('Input file:{0}'.format(inputFile))
+
+    if not source or not target:
+        print('Missing required parameters: -s <source> or -d <destinatin>\n{0}'.format(helpMsg))
+        sys.exit(2)
+
     stationMap = StationMap(inputFile)
     route = stationMap.findRoute(source, target, option, time)
     stationMap.printRoute(route)

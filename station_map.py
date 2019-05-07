@@ -73,10 +73,7 @@ class StationMap:
             second index represents the travel time.  If the option "shortest" was selected the travel 
             time will be empty.
         """
-        if (not source or not target):
-            print("Invalid input")
-            return []
-
+        
         if (source not in self.stationInterchanges or target not in self.stationInterchanges):
             print("Invalid inputs")
             return []
