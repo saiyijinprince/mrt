@@ -1,4 +1,5 @@
 from station_datetime_utils import StationDatetimeUtils
+from date_utils import DateUtils
 
 class Station:
     """
@@ -32,6 +33,7 @@ class Station:
     """
 
     stationDatetimeUtils = StationDatetimeUtils()
+    dateUtils = DateUtils()
 
     def __init__(self, code:str, name:str, date:str):
         self.code = code 
@@ -40,6 +42,14 @@ class Station:
         self.line = self.code[0:2]
 
     def isOpen(self) -> bool:
+        """
+        Returns whether the station has been constructed already, comparing against today's date.
+
+        Returns
+        -------
+        bool
+            True/False.
+        """
         try:
             #Check whether the station has completed construction
             return Station.stationDatetimeUtils.isDatePriorToday(self.date)
@@ -48,7 +58,7 @@ class Station:
     
     def isOpenAtSpecificTime(self, inputTime:str = None) -> bool:
         try:
-            if Station.stationDatetimeUtils.compareDates(self.date, '%d %B %Y', inputTime, '%Y-%m-%dT%H:%M') > -1:
+            if Station.dateUtils.compareDates(self.date, '%d %B %Y', inputTime, '%Y-%m-%dT%H:%M') > -1:
                 return False
             #Is the input time between 10PM - 6AM, if so then station will be closed
             return Station.stationDatetimeUtils.isLineRunning(self.line, inputTime)

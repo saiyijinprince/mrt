@@ -5,8 +5,6 @@ from queue import Queue
 class StationMap:
     """Utility class that will facilitates various operations for load and routing stations.
     
-    ...
-
     Attributes
     ----------
     stations: dict
@@ -37,7 +35,6 @@ class StationMap:
             input data file that contains all the stations information such as there codes, the construction date
             and interchange information.  Everything that's needed to build the stations graph.
         """
-
         f = open(stationMapDataFilePath, "r")
         if f.mode != 'r':
             print("Error reading input file")
@@ -87,15 +84,20 @@ class StationMap:
         if not option:
             option = 'shortest'
 
+        # You can have multiple sources and destinations because the station can be an 
+        # interchange where you have multiple lines to chose from. 
+        sources = self.stationInterchanges[source]
+        dests = self.stationInterchanges[target]
+
         route = []
         if option == 'shortest':
-            route = self.__findRouteShortestPath(source, target)
+            route = self.__findRouteShortestPath(sources, dests)
         elif option == 'fastest':
             if not startTime or len(startTime) == 0:
                 startTime = StationMap.dateUtils.getTodaysDate()
-            route = self.__scheduleRoute(source, target, startTime)
+            route = self.__scheduleRoute(sources, dests, startTime)
         else:
-            print('Invalid option')
+            print('Invalid option: {0}'.format(option))
             return []
         return route
 
@@ -103,8 +105,10 @@ class StationMap:
         if (len(routes) == 0):
             return
         
+        #TODO: Encapsulate Displayable route in a class.
         displayableRoutes = []
         displayableRoute = {}
+
         for i, ri in enumerate(routes):
             if len(ri) != 2:
                 continue
@@ -150,12 +154,7 @@ class StationMap:
             print('\n')
 
 
-    def __scheduleRoute(self, source:str, dest:str, startTime:str) -> []:
-        if (source == dest):
-            return []
-
-        sources = self.stationInterchanges[source]
-        dests = self.stationInterchanges[dest]
+    def __scheduleRoute(self, sources:[], dests:[], startTime:str) -> []:
         destinations = set(dests)
         results = []
         visited = set()
@@ -171,9 +170,9 @@ class StationMap:
             if curr in visited:
                 continue
 
+            #TODO: Future enhancement add timestamp for each stop.  Also mark which parts of the route are during peak hours.
             visited.add(curr)
             path.append(curr)
-            currStation = self.stations[curr]
             
             if curr in destinations:
                 timeTaken = StationMap.dateUtils.minuteDifference(startTime, elapsedTime)
@@ -182,6 +181,7 @@ class StationMap:
             
             interchanges = Queue()
             neighbors = self.stationGraph[curr]
+            currStation = self.stations[curr]
             for n in neighbors:
                 nextStation = self.stations[n]
 
@@ -205,13 +205,8 @@ class StationMap:
 
         return results
 
-    def __findRouteShortestPath(self, source:str, dest:str) -> []:
-        if source == dest:
-            return []
+    def __findRouteShortestPath(self, sources:[], dests:[]) -> []:
 
-        #throw exception if input isn't found
-        sources = self.stationInterchanges[source]
-        dests = self.stationInterchanges[dest]
         destinations = set(dests)
         minPath = []
         visited = set()
@@ -266,7 +261,7 @@ class StationMap:
     def __addEdges(self, station:str, stations:[]):
         for s in stations:
             self.__addEdge(station, s)
-                  
+      
     def __parseInputStationsData(self, lines:[]) -> None:
         prevStation = ''
         prevLine = ''
@@ -283,9 +278,12 @@ class StationMap:
                 continue
 
             self.stations[station] = Station(code=station, name=name, date=date.rstrip())
+
+            # Check is the station has been constructed already
             if not self.stations[station].isOpen():
                 continue
 
+            # Builds the station graph
             if name in self.stationInterchanges:
                 self.stationInterchanges[name].append(station)
                 self.__addEdges(station, self.stationInterchanges[name])

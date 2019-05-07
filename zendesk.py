@@ -5,12 +5,12 @@ from station_map import StationMap
 from datetime import datetime
 
 def main(argv):
-    inputFile = ''
+    inputFile = './StationMap.csv'
+    option = 'shortest'
     source = ''
     target = ''
-    option = 'shortest'
     time = ''
-    helpMsg = 'usage: zendesk.py -i <path/to/stationmap.csv> -s <start station> -d <target station> [-o <option=[shortest,fastest] -t <startTime>]' 
+    helpMsg = 'usage: zendesk.py -s <start station> -d <target station> [-o <option=[shortest,fastest] -t <startTime=[current_time]> -i <path/to/stationmap=./StationMap.csv>]' 
     try:
         opts, args = getopt.getopt(argv, "i:s:d:h:o:t:")
     except getopt.GetoptError:
@@ -30,13 +30,11 @@ def main(argv):
         elif opt == "-h":
             print (helpMsg)
             sys.exit()
+            
     print ('Input file:', inputFile)
-
     stationMap = StationMap(inputFile)
     route = stationMap.findRoute(source, target, option, time)
     stationMap.printRoute(route)
-
-    #print(stationMap.stationExchanges)
 
 if __name__ == "__main__":
     main(sys.argv[1:])

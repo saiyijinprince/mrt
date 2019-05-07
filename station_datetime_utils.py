@@ -37,26 +37,13 @@ class StationDatetimeUtils:
         return StationDatetimeUtils.dateUtils.isTimeBetween(time(22,0), time(6,0), inputDateTime.time())
 
     def isDatePriorToday(self, inputDate:str, inputDateFormat:str = '%d %B %Y') -> bool:
+        """
+        Returns if the input date is before today's date.
+        """
         dateTimeToday = datetime.today()
         dateToday = dateTimeToday.date()
         stationDate = datetime.strptime(inputDate, inputDateFormat).date()
         return stationDate < dateToday
-    
-    def compareDates(self, date1:str, date1Format:str, date2:str, date2Format:str) -> int:
-        try:            
-            date1DateTime = datetime.strptime(date1, date1Format)
-            date2DateTime = datetime.strptime(date2, date2Format)
-            
-            #Is the station built?
-            if date1DateTime.date() < date2DateTime.date():
-                return -1
-            elif date1DateTime.date() > date2DateTime.date():
-                return 1
-            else:
-                return 0
-
-        except ValueError:
-            return -2
 
     def isLineRunning(self, line:str, inputDate:str, inputDateFormat:str = None) -> bool:
         if not inputDateFormat:
@@ -74,6 +61,11 @@ class StationDatetimeUtils:
         return True
 
     def getNextTrainTime(self, inputTime:str, line:str) -> str:
+        """
+        Depending on the line and the current time, return the timestamp of the next train based on the
+        rules given by peak hours and night hours.
+        """
+
         delta = 0
         if self.isPeakHours(inputTime):
             if line == 'NS' or line == 'NE':
