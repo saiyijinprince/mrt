@@ -1,6 +1,6 @@
 # Directions For Running Program
 
-## Note Project Directory Structure
+## Note About Project Directory Structure
 Inside the zendesk folder, you'll find Python3/Python2 versions.  There are no differences other than the python 3 version includes function parameter types to help with hints while developing.  Since this will run on a fresh install on ubuntu 16.04, which comes with python 2 out of the box.  **Python3 is recommended for testing**  But if you aren't able to upgrade to python3 please use the Python2 folder.
 
 ## Option #1: CLI Program
@@ -8,7 +8,7 @@ Inside the zendesk folder, you'll find Python3/Python2 versions.  There are no d
 
     Steps:
         1. cd to project directory
-        2. run python zendesk.py  
+        2. run: python zendesk.py  
             -s <start station> 
             -d <target station> 
             [-o <option=[shortest,fastest] 
@@ -40,7 +40,7 @@ Inside the zendesk folder, you'll find Python3/Python2 versions.  There are no d
     Steps:
         0. Requires flask so to run the web app, run: "pip install flask"
         1. cd to project directory
-        2. python app.py
+        2. run: python app.py
         3. It will start running a local server.  Open chrome or firefox and go to url flask provided.  (Most likely: http://127.0.0.1:5000/)
 
 
